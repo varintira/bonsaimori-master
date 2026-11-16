@@ -1,0 +1,307 @@
+/* =========================================
+   GLOBAL & SHARED STYLES (Navbar, Footer, Body)
+========================================= */
+body {
+    color: #1E2D22; 
+    background-color: #FFFFFF; 
+}
+
+/* --- Navbar Styles --- */
+.navbar {
+    background-color: #D6E3D9 !important; 
+    border-bottom: 1px solid #A3B5A6 !important; /* เส้นขอบเข้มขึ้นเล็กน้อย */
+}
+
+.navbar-brand strong {
+    color: #121C14; 
+}
+
+.navbar-nav .nav-link {
+    color: #3E4E42 !important; /* สีเมนูที่ยังไม่ได้เลือก */
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover, 
+.navbar-nav .nav-link.active {
+    color: #121C14 !important; /* สีเมนูตอนชี้/หรือหน้าปัจจุบัน เข้มสุด */
+    font-weight: 600;
+}
+
+/* --- Footer Styles --- */
+footer.bg-body-tertiary {
+    background-color: #D6E3D9 !important; 
+    border-top: 1px solid #A3B5A6 !important;
+}
+
+footer .text-body-secondary {
+    color: #243629 !important; /* สีข้อความ Copyright */
+    font-weight: 500;
+}
+
+footer .nav-link.text-body-secondary {
+    color: #3E4E42 !important;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+footer .nav-link.text-body-secondary:hover {
+    color: #121C14 !important;
+}
+
+
+/* =========================================
+   1. INDEX PAGE (index.html)
+========================================= */
+.home-title {
+    color: #1B2B20;
+    font-weight: 600;
+}
+
+/* Category Filter */
+#categoryFilters .nav-link {
+    color: #2C4232;
+    background-color: transparent;
+    border: 1px solid #C8D2CA;
+    border-radius: 30px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+#categoryFilters .nav-link:hover {
+    background-color: #E9ECE8;
+    border-color: #8A9A8E;
+    color: #1B2B20;
+}
+
+#categoryFilters .nav-link.active {
+    background-color: #2C4232;
+    border-color: #2C4232;
+    color: #F9FAF8;
+}
+
+/* View Details Button (Used in generated Bonsai cards) */
+.btn-primary {
+    background-color: #2C4232;
+    border-color: #2C4232;
+    color: #F9FAF8;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: #1B2B20 !important;
+    border-color: #1B2B20 !important;
+    color: #F9FAF8 !important;
+    box-shadow: none !important;
+}
+
+/* Card Image (Used in generated Bonsai cards) */
+.card-img-top {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+
+/* =========================================
+   2. ABOUT PAGE (about.html)
+========================================= */
+.about-card {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 15px;
+    border: 1px solid #E9ECE8;
+    background-color: #FAFCFA;
+}
+
+.about-img {
+    width: 100%;
+    height: 310px;
+    object-fit: cover;
+}
+
+.award-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #E9ECE8;
+}
+
+
+/* =========================================
+   3. TEAM PAGE (team.html)
+========================================= */
+.team-title {
+    font-size: 42px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #1B2B20;
+}
+
+.team-description {
+    color: #677369;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+.team-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 10px;
+}
+
+.team-container {
+    display: flex;
+    gap: 22px;
+    width: max-content;
+}
+
+.team-card {
+    width: 205px;
+    flex-shrink: 0;
+}
+
+.team-img {
+    width: 205px;
+    height: 215px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.team-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 3px;
+    color: #2C4232;
+}
+
+.team-position {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #505E53;
+}
+
+.team-info {
+    font-size: 13px;
+    color: #677369;
+    line-height: 1.5;
+}
+
+
+
+/* =========================================
+   4. CONTACT PAGE (contact.html)
+========================================= */
+.contact-title {
+    font-size: 48px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #1B2B20;
+}
+
+.contact-subtitle {
+    color: #677369;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.contact-card {
+    border: 1px solid #C8D2CA;
+    border-radius: 12px;
+    padding: 35px;
+    background-color: #FAFCFA;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #2C4232;
+}
+
+.form-control {
+    border: 1px solid #C8D2CA;
+    border-radius: 8px;
+    padding: 12px 14px;
+    background-color: #FFFFFF;
+    color: #2C4232;
+}
+
+.form-control::placeholder {
+    color: #A3B1A6;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #8A9A8E;
+}
+
+.contact-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #2C4232;
+    color: #F9FAF8;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.contact-btn:hover {
+    background-color: #1B2B20;
+    color: #F9FAF8;
+}
+
+.contact-info {
+    color: #505E53;
+    line-height: 1.6;
+}
+
+.contact-info h5 {
+    color: #2C4232;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.contact-info p {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* =========================================
+   5. SIGN IN & SIGN UP PAGES
+========================================= */
+.auth-title {
+    font-size: 38px;
+    font-weight: 500;
+    color: #1B2B20;
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    color: #677369;
+    font-size: 15px;
+}
+
+.auth-switch-text {
+    font-size: 14px;
+    color: #505E53;
+}
+
+.auth-link {
+    color: #2C4232;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid #2C4232;
+    padding-bottom: 1px;
+    transition: all 0.2s ease;
+}
+
+.auth-link:hover {
+    color: #121C14;
+    border-bottom-color: #121C14;
+}

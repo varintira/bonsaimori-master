@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bonsai Mori</title>
+    <link rel="stylesheet" href="../vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+
+  </head>
+  <body>
+
+    <!-- nav bar -->
+    <nav
+      class="navbar navbar-expand-lg bg-body sticky-top border-bottom"
+      aria-label="เมนูหลัก"
+    >
+      <div class="container">
+        <a
+          class="navbar-brand d-flex align-items-center gap-2"
+          href="index.html"
+          aria-label="Bonsai Mori"
+        >
+          <img src="../assets/icon-bonsai.png" width="44" height="44" alt="Icon Bonsai Mori" />
+          <span><strong class="d-block lh-1">Bonsai Mori</strong></span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNav"
+          aria-controls="mainNav"
+          aria-expanded="false"
+          aria-label="เปิดหรือปิดเมนู"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul
+            class="navbar-nav ms-auto align-items-lg-center gap-3 justify-content-center"
+          >
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="index.html"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="team.html">Team</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="logout()">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+    <!-- carousel card  -->
+    <div
+      id="carouselExampleIndicators"
+      class="carousel slide"
+      data-bs-ride="carousel"
+      data-bs-interval="3000"
+    >
+      <div class="carousel-indicators">
+        <button
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide-to="0"
+          class="active"
+          aria-current="true"
+          aria-label="Slide 1"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide-to="1"
+          aria-label="Slide 2"
+        ></button>
+        <button
+          type="button"
+          data-bs-target="#carouselExampleIndicators"
+          data-bs-slide-to="2"
+          aria-label="Slide 3"
+        ></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img
+            src="../assets/bonsai_home_1.jpg"
+            class="d-block w-100"
+            alt="..."
+          />
+        </div>
+        <div class="carousel-item">
+          <img
+            src="../assets/bonsai_home_2.jpg"
+            class="d-block w-100"
+            alt="..."
+          />
+        </div>
+        <div class="carousel-item">
+          <img
+            src="../assets/bonsai_home_3.jpg"
+            class="d-block w-100"
+            alt="..."
+          />
+        </div>
+      </div>
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#carouselExampleIndicators"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#carouselExampleIndicators"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+
+    <!-- first section paragraph -->
+
+    <div class="container py-5 py-lg-6">
+      <h1 class="home-title">What is Bonsai<br /></h1>
+      <p class="lead text-body-secondary mb-4">
+        Bonsai is the art of growing and shaping small trees in pots. It
+        originated from ancient Chinese traditions and was later developed in
+        Japan. Bonsai can be made from many types of trees, such as pine, ficus,
+        and juniper. The trees are carefully shaped by pruning branches and
+        using wires. The main purpose is to create a miniature tree that looks
+        like a natural, full-sized tree. Bonsai requires proper sunlight, water,
+        soil, and regular care to stay healthy. Today, bonsai is popular as a
+        hobby, decoration, and form of art.
+      </p>
+    </div>
+
+    <!-- filter category -->
+
+    <div class="container py-5 py-lg-6">
+      <h1 class="home-title">Bonsai Collection<br /></h1>
+      <div
+        class="nav nav-pills flex-nowrap overflow-x-auto gap-2 pb-2 mb-2"
+        id="categoryFilters"
+        role="tablist"
+        aria-label="Bonsai Collection Categories"
+      >
+        <button
+          class="nav-link active"
+          type="button"
+          role="tab"
+          data-category="all"
+          aria-selected="true"
+        >
+          All Bonsai
+        </button>
+        <button
+          class="nav-link"
+          type="button"
+          role="tab"
+          data-category="Juniper Bonsai"
+          aria-selected="false"
+        >
+          Juniper Bonsai
+        </button>
+        <button
+          class="nav-link"
+          type="button"
+          role="tab"
+          data-category="Pine Bonsai"
+          aria-selected="false"
+        >
+          Pine Bonsai
+        </button>
+        <button
+          class="nav-link"
+          type="button"
+          role="tab"
+          data-category="Ficus Bonsai"
+          aria-selected="false"
+        >
+          Ficus Bonsai
+        </button>
+        <button
+          class="nav-link"
+          type="button"
+          role="tab"
+          data-category="Carmona Bonsai"
+          aria-selected="false"
+        >
+          Carmona Bonsai
+        </button>
+        <button
+          class="nav-link"
+          type="button"
+          role="tab"
+          data-category="Other"
+          aria-selected="false"
+        >
+          Other
+        </button>
+      </div>
+    </div>
+
+    <!-- bonsai cards container -->
+
+    <div id="bonsaiContainer" class="row g-4">
+  <% bonsais.forEach(bonsai => { %>
+    <div class="col-md-4 bonsai-item" data-category="<%= bonsai.category %>">
+      <div class="card">
+        <img src="<%= bonsai.image %>" class="card-img-top" alt="<%= bonsai.name %>">
+        <div class="card-body">
+          <h5 class="card-title"><%= bonsai.name %></h5>
+          <p class="card-text"><%= bonsai.price %></p>
+          <a href="#" class="btn btn-primary">View Details</a>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+
+    <!-- footer section -->
+
+    <footer class="bg-body-tertiary py-4 mt-5">
+      <div
+        class="container d-flex flex-column flex-lg-row align-items-center justify-content-between gap-3"
+      >
+        <div class="text-body-secondary small text-center text-lg-start">
+          © 2024 Bonsai Mori. All rights reserved.
+        </div>
+        <ul class="nav gap-3 justify-content-center">
+          <li class="nav-item">
+            <a class="nav-link text-body-secondary" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-body-secondary" href="about.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-body-secondary" href="team.html">Team</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-body-secondary" href="contact.html">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+
+    <script src="../vendor/bootstrap.bundle.min.js"></script>
+    <script src="../js/bonsai.js"></script>
+    <script src="../js/auth.js"></script>
+  </body>
+</html>
