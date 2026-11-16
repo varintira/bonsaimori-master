@@ -44,32 +44,12 @@ function validatePassword(password) {
     return null; // ผ่านเงื่อนไข
 }
 
-const initialBonsaiList = [
-    { name: "Juniper Bonsai #023", category: "Juniper Bonsai", image: "../assets/Juniper_1.jpg", price: "$ 200.00" },
-    { name: "Ficus Bonsai #078", category: "Ficus Bonsai", image: "../assets/ficus_2.jpg", price: "$ 300.00" },
-    { name: "Juniper Bonsai #025", category: "Juniper Bonsai", image: "../assets/Juniper_3.jpg", price: "$ 300.00" },
-    { name: "Ficus Bonsai #098", category: "Ficus Bonsai", image: "../assets/ficus_3.jpg", price: "$ 300.00" },
-    { name: "Carmona Bonsai #018", category: "Carmona Bonsai", image: "../assets/carmona_2.jpg", price: "$ 220.00" },
-    { name: "Ficus Bonsai #009", category: "Ficus Bonsai", image: "../assets/ficus_4.jpg", price: "$ 300.00" },
-    { name: "Pine Bonsai #015", category: "Pine Bonsai", image: "../assets/pine_1.jpg", price: "$ 450.00" },
-    { name: "Juniper Bonsai #027", category: "Juniper Bonsai", image: "../assets/Juniper_2.jpg", price: "$ 320.00" },
-    { name: "Ficus Bonsai #008", category: "Ficus Bonsai", image: "../assets/ficus_1.jpg", price: "$ 300.00" },
-    { name: "Pine Bonsai #024", category: "Pine Bonsai", image: "../assets/pine_2.jpg", price: "$ 250.00" },
-    { name: "Carmona Bonsai #012", category: "Carmona Bonsai", image: "../assets/carmona_1.jpg", price: "$ 220.00" },
-    { name: "Chinese Elm Bonsai #099", category: "Other", image: "../assets/chinese_elm_1.jpg", price: "$ 480.00" }
-];
 
 mongoose.connect(process.env.MONGO_URI)
-    .then(async () => {
-        console.log("Connected to MongoDB!");
-        const count = await Bonsai.countDocuments();
-        if (count === 0) {
-            await Bonsai.insertMany(initialBonsaiList);
-            console.log("Inserted 12 bonsai items into MongoDB!");
-        }
-    })
+    .then(() => console.log("Connected to MongoDB!"))
     .catch(err => console.error("MongoDB Error:", err));
 
+    
 app.get("/", (req, res) => {
     res.redirect("/html/signin.html");
 });
