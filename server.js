@@ -13,7 +13,7 @@ const User = require("./models/user");
 const app = express();
 
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views")); // <-- เพิ่มบรรทัดนี้
+app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -44,12 +44,41 @@ function validatePassword(password) {
     return null; // ผ่านเงื่อนไข
 }
 
+// ================= MONGODB (เหมาะกับ Vercel / serverless) =================
+let cached = global._mongoose;
+if (!cached) cached = global._mongoose = { conn: null, promise: null };
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("Connected to MongoDB!"))
-    .catch(err => console.error("MongoDB Error:", err));
+async function connectDB() {
+    if (cached.conn) return cached.conn;
 
-    
+    if (!cached.promise) {
+        cached.promise = mongoose.connect(process.env.MONGO_URI, {
+            bufferCommands: false,
+            serverSelectionTimeoutMS: 10000,
+        });
+    }
+
+    try {
+        cached.conn = await cached.promise;
+    } catch (err) {
+        cached.promise = null; // ล้างเพื่อให้ลองใหม่ได้
+        throw err;
+    }
+    return cached.conn;
+}
+
+// ให้ทุก request รอการเชื่อมต่อให้เสร็จก่อน
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        console.error("MongoDB Error:", err);
+        res.status(500).send("เชื่อมต่อฐานข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+    }
+});
+
+// ================= PAGE ROUTES =================
 app.get("/", (req, res) => {
     res.redirect("/html/signin.html");
 });
@@ -59,6 +88,7 @@ app.get("/html/index.html", async (req, res) => {
         const bonsais = await Bonsai.find();
         res.render("index", { bonsais });
     } catch (err) {
+        console.error("Bonsai.find error:", err);
         res.status(500).send("ดึงข้อมูลสินค้าไม่สำเร็จ");
     }
 });
@@ -84,6 +114,7 @@ app.post("/api/signup", async (req, res) => {
         await User.create({ name, email, password: hashedPassword });
         res.json({ success: true, message: "สมัครสมาชิกสำเร็จ!" });
     } catch (err) {
+        console.error("Signup error:", err);
         res.status(500).json({ message: "เกิดข้อผิดพลาดในการสมัครสมาชิก" });
     }
 });
@@ -106,6 +137,7 @@ app.post("/api/signin", async (req, res) => {
         req.session.userName = user.name;
         res.json({ success: true, message: `ยินดีต้อนรับคุณ ${user.name}` });
     } catch (err) {
+        console.error("Signin error:", err);
         res.status(500).json({ message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" });
     }
 });
@@ -128,7 +160,6 @@ app.post("/api/forgot-password", async (req, res) => {
 
         const baseUrl = `${req.protocol}://${req.get("host")}`;
         const resetUrl = `${baseUrl}/html/repassword.html?token=${token}`;
-        console.log("Reset Password Link:", resetUrl); // แสดงใน Terminal เผื่อใช้ทดสอบ
 
         // ส่งอีเมลจริงถ้าตั้งค่า EMAIL_USER และ EMAIL_PASS ไว้ใน .env
         if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
@@ -185,6 +216,7 @@ app.post("/api/reset-password", async (req, res) => {
 
         res.json({ success: true, message: "เปลี่ยนรหัสผ่านสำเร็จ! กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่" });
     } catch (err) {
+        console.error("Reset password error:", err);
         res.status(500).json({ message: "เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน" });
     }
 });
@@ -195,7 +227,14 @@ app.post("/api/logout", (req, res) => {
     res.json({ success: true });
 });
 
+// ================= START SERVER =================
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-});
+
+// รันในเครื่องด้วย node server.js ได้ตามปกติ ส่วนบน Vercel จะใช้ module.exports
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is running at http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;
