@@ -9,8 +9,10 @@ const path = require("path");
 
 const Bonsai = require("./models/bonsaidb");
 const User = require("./models/user");
+const Visitor = require("./models/visitor");
 
 const app = express();
+app.set("trust proxy", 1); // จำเป็นบน Vercel เพื่อให้ได้ IP จริงของผู้เข้าชม
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -46,7 +48,7 @@ function validatePassword(password) {
 
 // ================= MONGODB (เหมาะกับ Vercel / serverless) =================
 let cached = global._mongoose;
-if (!cached) cached = global._mongoose = { conn: null, promise: null };
+if (!cached) cached = global._mongoose = { conn: null, promise: null, indexed: false };
 
 async function connectDB() {
     if (cached.conn) return cached.conn;
@@ -64,6 +66,17 @@ async function connectDB() {
         cached.promise = null; // ล้างเพื่อให้ลองใหม่ได้
         throw err;
     }
+
+    // ให้แน่ใจว่า unique index (ip + visitDate) ถูกสร้างแล้ว (ทำครั้งเดียวต่อ instance)
+    if (!cached.indexed) {
+        try {
+            await Visitor.init();
+            cached.indexed = true;
+        } catch (err) {
+            console.error("Visitor index error:", err);
+        }
+    }
+
     return cached.conn;
 }
 
@@ -78,6 +91,54 @@ app.use(async (req, res, next) => {
     }
 });
 
+// ================= VISITOR COUNT =================
+
+// วันที่ปัจจุบันตามเขตเวลา Asia/Bangkok รูปแบบ YYYY-MM-DD
+function getBangkokDate(date = new Date()) {
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Bangkok",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(date);
+}
+
+// ดึง IP จริงของผู้เข้าชม
+function getClientIp(req) {
+    const forwarded = req.headers["x-forwarded-for"];
+    let ip = forwarded ? forwarded.split(",")[0].trim() : req.ip;
+    if (ip && ip.startsWith("::ffff:")) ip = ip.slice(7); // แปลง IPv4-mapped IPv6
+    return ip || "unknown";
+}
+
+// บันทึกการเข้าชม: 1 IP + 1 วัน = 1 document (atomic ด้วย upsert)
+async function trackVisitor(req) {
+    const now = new Date();
+    const filter = { ip: getClientIp(req), visitDate: getBangkokDate(now) };
+
+    try {
+        await Visitor.findOneAndUpdate(
+            filter,
+            {
+                $setOnInsert: { firstVisitAt: now },
+                $set: { lastVisitAt: now },
+                $inc: { hitCount: 1 }
+            },
+            { upsert: true }
+        );
+    } catch (err) {
+        // ถ้าชนกันตอนสร้างพร้อมกัน (E11000) ให้ update document ที่มีอยู่แล้วแทน
+        if (err.code === 11000) {
+            await Visitor.updateOne(filter, {
+                $set: { lastVisitAt: now },
+                $inc: { hitCount: 1 }
+            });
+        } else {
+            throw err;
+        }
+    }
+}
+
 // ================= PAGE ROUTES =================
 app.get("/", (req, res) => {
     res.redirect("/html/signin.html");
@@ -85,11 +146,39 @@ app.get("/", (req, res) => {
 
 app.get("/html/index.html", async (req, res) => {
     try {
+        // บันทึกผู้เข้าชม (ใช้ await เพราะบน Vercel ฟังก์ชันจะหยุดทันทีที่ตอบกลับ)
+        try {
+            await trackVisitor(req);
+        } catch (err) {
+            console.error("Visitor track error:", err);
+        }
+
         const bonsais = await Bonsai.find();
-        res.render("index", { bonsais });
+
+        // จำนวน unique visitor ของวันนี้ (เขตเวลา Asia/Bangkok)
+        const todayVisitors = await Visitor.countDocuments({ visitDate: getBangkokDate() });
+
+        res.render("index", { bonsais, todayVisitors });
     } catch (err) {
         console.error("Bonsai.find error:", err);
         res.status(500).send("ดึงข้อมูลสินค้าไม่สำเร็จ");
+    }
+});
+
+// สถิติ unique visitor รายวัน 30 วันล่าสุด (ต้องล็อกอินก่อน)
+app.get("/api/visitors/stats", async (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ message: "Unauthorized" });
+
+    try {
+        const stats = await Visitor.aggregate([
+            { $group: { _id: "$visitDate", uniqueVisitors: { $sum: 1 } } },
+            { $sort: { _id: -1 } },
+            { $limit: 30 }
+        ]);
+        res.json(stats);
+    } catch (err) {
+        console.error("Visitor stats error:", err);
+        res.status(500).json({ message: "ดึงสถิติไม่สำเร็จ" });
     }
 });
 
